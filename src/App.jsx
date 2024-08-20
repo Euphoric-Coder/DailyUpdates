@@ -1,5 +1,5 @@
-import NavBar from "../Components/Navbar"
-import NewsBoard from "../Components/NewsBoard"
+import NavBar from "./Components/Navbar"
+import NewsBoard from "./Components/NewsBoard"
 
 const App = () => {
   return (
