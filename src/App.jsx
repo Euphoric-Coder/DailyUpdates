@@ -1,3 +1,4 @@
+
 import NavBar from "./Components/Navbar"
 import NewsBoard from "./Components/NewsBoard"
 
