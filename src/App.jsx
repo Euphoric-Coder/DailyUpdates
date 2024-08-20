@@ -16,22 +16,55 @@ const NewsItem = ({title, description, src, url}) => {
 }
 
 const NewsBoard = () => {
-    const [articles,setArticles] = useState([]);
-    useEffect(()=>{
-        // let url = `https://newsapi.org/v2/top-headlines?country=in&apiKey=${import.meta.env.VITE_API_KEY}`;
-        let url = `https://newsapi.org/v2/everything?q=science&apiKey=${import.meta.env.VITE_API_KEY}`;
-        fetch(url).then(response=> response.json()).then(data=> setArticles(data.articles));
-    },[])
+    const [articles, setArticles] = useState([]);
+    const [error, setError] = useState(null);
+
+    useEffect(() => {
+        const fetchNews = async () => {
+            try {
+                let url = `https://newsapi.org/v2/everything?q=science&apiKey=${import.meta.env.VITE_API_KEY}`;
+                const response = await fetch(url);
+                const data = await response.json();
+
+                if (response.ok && data.status === "ok") {
+                    setArticles(data.articles);
+                } else {
+                    setError("Error fetching news articles");
+                }
+            } catch (err) {
+                setError("Network error");
+            }
+        };
+
+        fetchNews();
+    }, []);
+
+    if (error) {
+        return <div className="text-center">{error}</div>;
+    }
+
     return (
-    <div>
-        <h2 className="text-center">Latest <span className="badge bg-danger fs-4">DailyNews</span>
-        </h2>
-        {articles.map((news,index)=>{
-            return <NewsItem key={index} title={news.title} description={news.description} src={news.urlToImage} url={news.url}/>
-        })}
-    </div>
-  )
-}
+        <div>
+            <h2 className="text-center">
+                Latest <span className="badge bg-danger fs-4">DailyNews</span>
+            </h2>
+            {articles.length > 0 ? (
+                articles.map((news, index) => (
+                    <NewsItem
+                        key={index}
+                        title={news.title || "No Title Available"}
+                        description={news.description || "No description available"}
+                        src={news.urlToImage || image} // Fallback image
+                        url={news.url || "#"}
+                    />
+                ))
+            ) : (
+                <div className="text-center">No news articles found.</div>
+            )}
+        </div>
+    );
+};
+
 
 // import { useEffect, useState } from "react";
 // import NewsItem from "./NewsItem";
